@@ -1,6 +1,8 @@
 # 指南
 
-## 快速开始
+## 入门
+
+### 安装
 
 您可以通过`npm`或`CDN`安装此插件。
 
@@ -8,7 +10,7 @@
 npm install vcc-validate --save
 ```
 
-## 用法
+### 用法
 
 ?>示例使用`ES2015`语法，如果您还没有，请确保在`ES2015`上使用。
 
@@ -33,49 +35,302 @@ Vue.use(VccValidate);
 要显示错误消息，我们只需使用该`api().getMessages(fieldStr)`方法获取该字段错误:
 
 ```html
-{{vccTest.api().getMessages('userItem.lspuLoginName')}}
+<gw-input v-vcc-field="'modelForm[@userItem.lspuLoginName@]'" :value.sync="modelForm['userItem.lspuLoginName']">
+<gw-checkbox v-model="testSelect" v-vcc-field="'testSelect|for'" :label="key" class="check-item"
+        v-for="(value,key) of carrierOptions" :key="key">{{value.label}}</gw-checkbox>
+
+<span class="validate-message"> {{vccTest.api().getMessages('modelForm[@userItem.lspuLoginName@]')}}</span>
+
+<span class="validate-message"> {{vccTest.api().getMessages('testSelect')}}</span>
 ```
 
 ```js
+export default {
+      name: "userControlList",
+      data() {
+              return {
+                    vccTest: new this.vccValidator(),
+                    message: 'Hello VccValidate!'
+              }
+      },
+      methods: {
+            initVcc: () {
+                         this.vccTest.init(this, {
+                               openWarningLine: true,
+                               fields: {
+                                     'modelForm[@userItem.lspuLoginName@]': {
+                                           validators: {
+                                                 notEmpty: {
+                                                       message: "请填写必填信息"
+                                                 },
+                                                 length: {
+                                                       max: 10,
+                                                       min: 2,
+                                                       message: "min:2 max:10"
+                                                 }
 
-var app = new Vue({
-  el: '#app',
-  data: {
-    vccTest:new this.vccValidator(),
-    message: 'Hello VccValidate!'
-  }
-})
+                                           }
+                                     },
+                                     'testSelect': {
+                                           validators: {
+                                                 notEmpty: {
+                                                       message: "请选择必填信息"
+                                                 },
+                                                 length: {
+                                                       max: 3,
+                                                       min: 2,
+                                                       message: "min:2 max:3"
+                                                 }
+                                           }
+                                     },
+                               }
+                         });
+            }
+      }
+}
 ```
 
 ## 显示错误
 
 ### 显示单个错误消息
 
+```html
+<input type="text"    v-vcc-field="'lspuEmail'" :value.sync="lspuEmail']">
+<span>{{ vccTest.api().getMessages('lspuEmail')}}</span>
+```
+
 ### 显示多条错误消息
 
-### 显示指定的错误
+```html
+<ul>
+  <li  :key="error.validatorRuleName" v-for="error in vccTest.api().getMessagesList('modelForm[@userItem.lspuEmail@]')">{{ error.message }}</li>
+</ul>
+```
+
+```js
+//显示多条错误消息-数据格式:
+[ { "validatorRuleName": "notEmpty", "message": "请填写邮箱地址" }, { "validatorRuleName": "isEmail", "message": "请输入正确的邮箱格式" } ]
+```
+
+### 显示所有错误
+
+```html
+    <ul>
+      <li :key="error.validatorRuleName" v-for="error in vccTest.api().getMessagesList()">{{ error.message }}</li>
+    </ul>
+```
+
+```js
+//显示所有错误-数据格式:
+ [{
+             validatorRuleName: "notEmpty",
+             message: "请填写必填信息",
+             field: "modelForm['userItem.lspuLoginName']"
+       },
+       {
+             validatorRuleName: "length",
+             message: "min:2 max:10",
+             field: "modelForm['userItem.lspuLoginName']"
+       }
+ ]
+```
 
 ## 验证规则
 
 VccValidate提供了一系列开箱即用的验证规则，它们都是本地化的，涵盖了大多数验证需求：
 
-### email
+### isEmail
+
+```js
+/**
+ * isEmail
+ * zh-cn:检查字符串是否是电子邮件.
+ * en-us:check if the string is an email.
+ *
+ */
+```
+
+### contains
+
+```js
+/**
+ * contains
+ * zh-cn:检查字符串是否包含种子.
+ * en-us:check if the string contains the seed.
+ *
+ */
+```
+
+### equals
+
+```js
+/**
+ * equals
+ * zh-cn:检查字符串是否与比较匹配.
+ * en-us:check if the string matches the comparison.
+ *
+ */
+```
+
+### isAfter
+
+```js
+/**
+ * isAfter
+ * zh-cn:检查字符串是否仅包含ASCII字符.
+ * en-us:check if the string is a date that's after the specified date (defaults to now).
+ *
+ */
+```
+
+### isAlpha
+
+```js
+/**
+ * isAlpha
+ * zh-cn:检查字符串是否只包含字母(a-zA-Z)
+ * en-us:check if the string contains only letters (a-zA-Z).
+ *
+ */
+```
+
+### isAlphanumeric
+
+```js
+/**
+ * isAlphanumeric
+ * zh-cn:检查字符串是否只包含字母和数字
+ * en-us:check if the string contains only letters and numbers.
+ *
+ */
+ ```
+
+### isAscii
+
+```js
+/**
+ * isAscii
+ * zh-cn:检查字符串是否仅包含ASCII字符.
+ * en-us:check if the string contains ASCII chars only.
+ */
+ ```
+
+### isBase64
+
+```js
+/**
+ * isBase64
+ * zh-cn:检查字符串是否为base64编码.
+ * en-us:check if a string is base64 encoded.
+ *
+ */
+ ```
+
+### isBefore
+
+```js
+/**
+ * isBefore
+ * zh-cn:检查字符串是否是指定日期之前的日期
+ * en-us:check if the string is a date that's before the specified date.
+ *
+ */
+ ```
+
+### isBoolean
+
+```js
+/**
+ * isBoolean
+ * zh-cn:检查字符串是否是布尔值.
+ * en-us:check if a string is a boolean.
+ *
+ */
+ ```
+
+### isFloat
+
+```js
+/**
+ * isFloat
+ * zh-cn:检查字符串是否为浮点数.
+ * en-us:check if the string is a float.
+ *
+ */
+ ```
+
+### isInt
+
+```js
+/**
+ * isInt
+ * zh-cn:检查字符串是否为整数.
+ * en-us:check if the string is an integer.
+ */
+ ```
+
+### length
+
+```js
+/**
+ *
+ * length
+ * zh-cn:至少需要一个min和max选项.
+ * en-us:min and max options is required.
+ */
+ ```
+
+### notEmpty
+
+```js
+/**
+* notEmpty
+* zh-cn:检查输入值是否为空
+* en-us:Check if input value is empty or not
+*/
+ ```
+
+### regexp
+
+```js
+/**
+* regexp
+* zh-cn:检查值是否与给定的Javascript正则表达式匹配
+* en-us:Check if the value matches given Javascript regular expression
+*/
+ ```
 
 ## 自定义规则
 
-//todo
+//todo:此功能 在 1.1.0 版本完成
 
 ### 创建自定义规则
 
+//todo:此功能 在 1.1.0 版本完成
+
 ### 使用自定义规则
 
+//todo:此功能 在 1.1.0 版本完成
+
 ## 全局 Find BorderColor 指令
+
+全局指令是为了快速的找到  HTML输入或Vue组件  BorderColor.
+采用了配置的方式例如:
+
+```js
+findBorderColorCmd={
+'input':['=','-','>'],
+'gw-input':['=','-','<']
+}
+```
 
 * `<`:上一个同胞元素
 * `>`:下一个同胞元素
 * `=`:当前元素
 * `+`:父元素
 * `-`:子元素
+
+//todo:此功能 在 1.1.0 版本完成
 
 ## 配置项
 
@@ -159,6 +414,7 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
 禁用或启用提交按钮
 
 ```js
+
 //todo
 ```
 
@@ -233,7 +489,13 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
 获取现场选项
 
 ```js
-//todo
+      /**
+       * 获取现场选项
+       * @param {String} fieldStr
+       * @param {String} validatorRuleName
+       * @param {String} option
+       */
+      getOptions: function (fieldStr, validatorRuleName, option)
 ```
 
 ### updateOption
@@ -241,7 +503,14 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
 更新特定验证器的选项
 
 ```js
-//todo
+   /**
+    * 更新特定验证器的选项
+    * @param {String} fieldStr
+    * @param {String} validatorRuleName
+    * @param {String|Object} option
+    * @param {String|Object} value
+    */
+   updateOption: function (fieldStr, validatorRuleName, option, value)
 ```
 
 ## DEMO
