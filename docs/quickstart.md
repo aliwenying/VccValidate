@@ -302,15 +302,32 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
 
 ## 自定义规则
 
-//todo:此功能 在 1.1.0 版本完成
+@param {Object} $field Field element
+@param {Object} options Field options
+@returns {Boolean} true:不通过 false:通过
 
 ### 创建自定义规则
 
-//todo:此功能 在 1.1.0 版本完成
+```js
+  this.VccValidate.Rules.extend('test', {
+        validate: function (value, $field, validateRule) {
+              //todo 你的逻辑
+              return false;
+        }
+  });
+```
 
 ### 使用自定义规则
 
-//todo:此功能 在 1.1.0 版本完成
+``` js
+   'modelForm[@userItem.lspuPassword@]': {
+         validators: {
+               test: {
+                     message: "请输入密码"
+               },
+         }
+   }
+```
 
 ## 全局 Find BorderColor 指令
 
@@ -319,7 +336,7 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
 
 ```js
 findBorderColorCmd={
-'input':['=','-','>'],
+'input':['=','[1]','-','>'],
 'gw-input':['=','-','<']
 }
 ```
@@ -329,8 +346,8 @@ findBorderColorCmd={
 * `=`:当前元素
 * `+`:父元素
 * `-`:子元素
-
-//todo:此功能 在 1.1.0 版本完成
+* `[x]` x 如节点有多个 x 代表第几个
+//todo:此功能 在 1.2.0 版本完成
 
 ## 配置项
 
