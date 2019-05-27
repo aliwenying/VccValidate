@@ -18,9 +18,6 @@ npm install vcc-validate --save
 import Vue from 'vue';
 import VccValidate from 'vcc-validate';
 Vue.use(VccValidate);
-or
-import VccValidate from '@/utils/vcc-validate';
-Vue.use(VccValidate);
 ```
 
 ### 基本示例
@@ -30,6 +27,24 @@ Vue.use(VccValidate);
 
 ```html
 <input v-vcc-field="'userItem.lspuLoginName'" :value.sync="userItem.lspuLoginName"/>
+```
+
+```html
+<vuep template="#example"></vuep>
+
+<script v-pre type="text/x-template" id="example">
+  <template>
+    <div>Hello, {{ name }}!</div>
+  </template>
+
+  <script>
+    module.exports = {
+      data: function () {
+        return { name: 'Vue' }
+      }
+    }
+  </script>
+</script>
 ```
 
 要显示错误消息，我们只需使用该`api().getMessages(fieldStr)`方法获取该字段错误:
@@ -96,14 +111,14 @@ export default {
 
 ```html
 <input type="text"    v-vcc-field="'lspuEmail'" :value.sync="lspuEmail']">
-<span>{{ vccTest.api().getMessages('lspuEmail')}}</span>
+<span>{{ vccTest.api().getMessagesOne('lspuEmail')}}</span>
 ```
 
 ### 显示多条错误消息
 
 ```html
 <ul>
-  <li  :key="error.validatorRuleName" v-for="error in vccTest.api().getMessagesList('modelForm[@userItem.lspuEmail@]')">{{ error.message }}</li>
+  <li  :key="error._uuid" v-for="error in vccTest.api().getMessagesList('modelForm[@userItem.lspuEmail@]')">{{ error.message }}</li>
 </ul>
 ```
 
@@ -116,7 +131,7 @@ export default {
 
 ```html
     <ul>
-      <li :key="error.validatorRuleName" v-for="error in vccTest.api().getMessagesList()">{{ error.message }}</li>
+      <li :key="error._uuid" v-for="error in vccTest.api().getMessagesList()">{{ error.message }}</li>
     </ul>
 ```
 
@@ -302,14 +317,24 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
 
 ## 自定义规则
 
-@param {Object} $field Field element
-@param {Object} options Field options
-@returns {Boolean} true:不通过 false:通过
-
 ### 创建自定义规则
 
 ```js
   this.VccValidate.Rules.extend('test', {
+        /**
+         * @param {Object} value value
+         * @param {fieldName:'当前验证字段名称',oldVal:'上一次输入的数据'} $field 验证字段的一些信息
+         * @param {随意定义这个对象的属性} validateRule 规则对象
+         * 例如:
+         * length: {
+         *       max: 6,
+         *       min: 2,
+         *       message: "用户名长度最大6,不能低于2位"
+         * }
+         * length就是 validateRule 规则对象
+         * 你可以随意定义 validateRule里的属性
+         * @returns {Boolean} true:不通过 false:通过
+         */
         validate: function (value, $field, validateRule) {
               //todo 你的逻辑
               return false;
@@ -317,7 +342,9 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
   });
 ```
 
-### 使用自定义规则
+### 使用规则
+
+!>注意 message 是必须填写的
 
 ``` js
    'modelForm[@userItem.lspuPassword@]': {
@@ -332,6 +359,7 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
 ## 全局 Find BorderColor 指令
 
 全局指令是为了快速的找到  HTML输入或Vue组件  BorderColor.
+
 采用了配置的方式例如:
 
 ```js
@@ -347,7 +375,16 @@ findBorderColorCmd={
 * `+`:父元素
 * `-`:子元素
 * `[x]` x 如节点有多个 x 代表第几个
-//todo:此功能 在 1.2.0 版本完成
+* todo:此功能 在 1.3.0 版本完成
+
+### 为什么有了 autoFindBorder 自动查找边框 还需要 Find BorderColor 指令？
+
+```text
+autoFindBorder:
+是根据从上往下的方式 (当前没有子节点就返回当前节点) 对节点判断是否存在边框颜色,如存在则搜索终止返回当前找到的,
+绝大部分ui框架的  HTML输入或Form表单里的Vue组件 都会有默认的边框颜色
+所以我们几乎很少用到 Find BorderColor 指令,autoFindBorder 足够了
+```
 
 ## 配置项
 
@@ -359,10 +396,6 @@ findBorderColorCmd={
 
 警告线颜色 默认 red
 
-### openDebugLog
-
-是否 打开调试日志 默认 false
-
 ```js
 
     /**
@@ -371,6 +404,10 @@ findBorderColorCmd={
      * ps:请使用 v-vcc-submit-button 标注你的 提交按钮
      */
     autoDisableEnableSubmitButton: false,
+    /**
+     * v-vcc-submit-button 对应的 value  
+     */
+    submitButtonName: '',
     fields: {}
 ```
 
@@ -424,7 +461,8 @@ findBorderColorCmd={
 
 ### isValid
 
-如果所有表单字段都有效，则返回 true。否则，返回false.
+如果所有表单字段都有效，则返回 true。否则，返回false.                                             
+参数 @param {Boolean} isDestroy 验证通过就销毁插件执行 `destroy` true 销毁  false 不销毁 默认false
 
 ### disableEnableSubmitButton
 
