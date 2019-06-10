@@ -29,30 +29,12 @@ Vue.use(VccValidate);
 <input v-vcc-field="'userItem.lspuLoginName'" :value.sync="userItem.lspuLoginName"/>
 ```
 
-```html
-<vuep template="#example"></vuep>
-
-<script v-pre type="text/x-template" id="example">
-  <template>
-    <div>Hello, {{ name }}!</div>
-  </template>
-
-  <script>
-    module.exports = {
-      data: function () {
-        return { name: 'Vue' }
-      }
-    }
-  </script>
-</script>
-```
-
 要显示错误消息，我们只需使用该`api().getMessages(fieldStr)`方法获取该字段错误:
 
 ```html
-<gw-input v-vcc-field="'modelForm[@userItem.lspuLoginName@]'" :value.sync="modelForm['userItem.lspuLoginName']">
-<gw-checkbox v-model="testSelect" v-vcc-field="'testSelect|for'" :label="key" class="check-item"
-        v-for="(value,key) of carrierOptions" :key="key">{{value.label}}</gw-checkbox>
+<el-input v-vcc-field="'modelForm[@userItem.lspuLoginName@]'" :value.sync="modelForm['userItem.lspuLoginName']">
+<el-checkbox v-model="testSelect" v-vcc-field="'testSelect|for'" :label="key" class="check-item"
+        v-for="(value,key) of carrierOptions" :key="key">{{value.label}}</el-checkbox>
 
 <span class="validate-message"> {{vccTest.api().getMessages('modelForm[@userItem.lspuLoginName@]')}}</span>
 
@@ -192,7 +174,7 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
 ```js
 /**
  * isAfter
- * zh-cn:检查字符串是否仅包含ASCII字符.
+ * zh-cn:检查字符串是否是指定日期之后的日期（默认为现在）.
  * en-us:check if the string is a date that's after the specified date (defaults to now).
  *
  */
@@ -315,6 +297,36 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
 */
  ```
 
+### isURL
+
+```js
+/**
+ * isURL
+ * zh-cn:检查字符串是否为URL.
+ * en-us:check if the string is an URL.
+*/
+ ```
+
+### isUppercase
+
+```js
+/**
+ * isUppercase
+ * zh-cn:检查字符串是否为大写.
+ * en-us:check if the string is uppercase.
+*/
+ ```
+
+### isNumeric
+
+```js
+/**
+ * isNumeric
+ * zh-cn:检查字符串是否只包含数字.
+ * en-us:check if the string contains only numbers.
+*/
+ ```
+
 ## 自定义规则
 
 ### 创建自定义规则
@@ -365,7 +377,7 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
 ```js
 findBorderColorCmd={
 'input':['=','[1]','-','>'],
-'gw-input':['=','-','<']
+'el-input':['=','-','<']
 }
 ```
 
@@ -375,7 +387,7 @@ findBorderColorCmd={
 * `+`:父元素
 * `-`:子元素
 * `[x]` x 如节点有多个 x 代表第几个
-* todo:此功能 在 1.3.0 版本完成
+* todo:此功能 在 1.6.0 版本完成
 
 ### 为什么有了 autoFindBorder 自动查找边框 还需要 Find BorderColor 指令？
 

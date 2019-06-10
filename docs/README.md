@@ -8,7 +8,7 @@
 
 VccValidate是Vue.js的验证库。它有很多开箱即用的验证规则，也支持自定义验证规则。它是基于模板的，因此它与HTML5验证API类似且熟悉。您可以验证HTML5输入以及自定义Vue组件.
 
-查看[快速开始](quickstart.md)了解详情.
+查看[快速开始](https://dev-zl.github.io/VccValidate/#/)了解详情.
 
 ## 特性
 
@@ -25,12 +25,13 @@ VccValidate是Vue.js的验证库。它有很多开箱即用的验证规则，也
 
 ## 例子
 
-可以查看 [ShowCase](quickstart.md) 来了解使用 VccValidate 的文档项目。
+可以查看 [ShowCase](https://dev-zl.github.io/VccValidate/#/) 来了解使用 VccValidate 的文档项目。
 
 ## 捐赠
 
-如果你觉得 VccValidate 对你有帮助，或者想对我微小的工作一点赞助，欢迎给我[捐赠](https://xxx.com)。
+如果你觉得 VccValidate 对你有帮助，或者想对我微小的工作一点赞助，欢迎给我[捐赠](https://github.com/dev-zl/VccValidate)。
 
 ## 社区
 
-在[xxx](https://xxx.com)的社区里可以找到VccValidate的用户和开发者团队.
+在[github](https://github.com/dev-zl/VccValidate)的社区里可以找到VccValidate的用户和开发者团队.                  
+欢迎您为此项目做出贡献，但在此之前，请联系我们。
