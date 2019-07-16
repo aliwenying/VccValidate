@@ -100,7 +100,7 @@ export default {
 
 ```html
 <ul>
-  <li  :key="error._uuid" v-for="error in vccTest.api().getMessagesList('modelForm[@userItem.lspuEmail@]')">{{ error.message }}</li>
+  <li  :key="error._uuid" v-for="error in vccTest.api().getMessages('modelForm[@userItem.lspuEmail@]')">{{ error.message }}</li>
 </ul>
 ```
 
