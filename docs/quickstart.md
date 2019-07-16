@@ -29,16 +29,16 @@ Vue.use(VccValidate);
 <input v-vcc-field="'userItem.lspuLoginName'" :value.sync="userItem.lspuLoginName"/>
 ```
 
-要显示错误消息，我们只需使用该`api().getMessages(fieldStr)`方法获取该字段错误:
+要显示错误消息，我们只需使用该`api().getMessagesOne(fieldStr)`方法获取该字段错误:
 
 ```html
 <el-input v-vcc-field="'modelForm[@userItem.lspuLoginName@]'" :value.sync="modelForm['userItem.lspuLoginName']">
 <el-checkbox v-model="testSelect" v-vcc-field="'testSelect|for'" :label="key" class="check-item"
         v-for="(value,key) of carrierOptions" :key="key">{{value.label}}</el-checkbox>
 
-<span class="validate-message"> {{vccTest.api().getMessages('modelForm[@userItem.lspuLoginName@]')}}</span>
+<span class="validate-message"> {{vccTest.api().getMessagesOne('modelForm[@userItem.lspuLoginName@]')}}</span>
 
-<span class="validate-message"> {{vccTest.api().getMessages('testSelect')}}</span>
+<span class="validate-message"> {{vccTest.api().getMessagesOne('testSelect')}}</span>
 ```
 
 ```js
@@ -136,6 +136,49 @@ export default {
 
 VccValidate提供了一系列开箱即用的验证规则，它们都是本地化的，涵盖了大多数验证需求：
 
+### different
+
+```js
+/**
+ * different
+ * zh-cn:输入值与给定字段的值不同 如果验证相同,则验证失败.
+ * en-us:The input value is different from the value of the given field. If the verification is the same, the verification fails.
+ * 只支持基本类型比较
+ *
+ * @param {Object} $field Field element
+ * @param {Object} options Field options
+ * @param {Map} allFieldValMap 所有验证字段的 val
+ * @returns {Boolean} true:不通过 false:通过
+ */
+      different: {
+            field: 'newPassword',
+            message: "输入值与给定字段的值不同"
+      }
+      // field 表示当前field验证完成,触发另一个field的验证 非必填
+```
+
+### callback
+
+```js
+/**
+ * callback
+ * zh-cn:回调验证器 可以用于 异步后端验证
+ * en-us:callback can be use on Async Backend Validation
+ *
+ * @param {Object} $field Field element
+ * @param {Object} options Field options
+ * @returns {Boolean} true:不通过 false:通过
+ */
+
+    callback: {
+          message: "此邮箱已经存在",
+          callback: function (value, $field, validateRule, allFieldValMap) {
+                // true:不通过 false:通过
+                return ['123@www.com', '333@www.com'].includes(value);
+          },
+    }
+```
+
 ### isEmail
 
 ```js
@@ -156,6 +199,10 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
  * en-us:check if the string contains the seed.
  *
  */
+    contains: {
+          message: "检查字符串是否包含种子",
+          seed: "<IMG SRC=javascript:alert('XSS')>"
+    }
 ```
 
 ### equals
@@ -167,6 +214,16 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
  * en-us:check if the string matches the comparison.
  *
  */
+    equals: {
+          message: "检查字符串是否与比较匹配",
+          comparison: "123456",
+    }
+    //or
+    equals: {
+          message: "检查字符串是否与比较匹配",
+          // 验证列表中的 field
+          field: "password",
+    }
 ```
 
 ### isAfter
@@ -179,6 +236,17 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
  *
  */
 ```
+
+### isBefore
+
+```js
+/**
+ * isBefore
+ * zh-cn:检查字符串是否是指定日期之前的日期
+ * en-us:check if the string is a date that's before the specified date.
+ *
+ */
+ ```
 
 ### isAlpha
 
@@ -219,17 +287,6 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
  * isBase64
  * zh-cn:检查字符串是否为base64编码.
  * en-us:check if a string is base64 encoded.
- *
- */
- ```
-
-### isBefore
-
-```js
-/**
- * isBefore
- * zh-cn:检查字符串是否是指定日期之前的日期
- * en-us:check if the string is a date that's before the specified date.
  *
  */
  ```
@@ -295,6 +352,11 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
 * zh-cn:检查值是否与给定的Javascript正则表达式匹配
 * en-us:Check if the value matches given Javascript regular expression
 */
+
+    regexp: {
+          reg: /^\w{3,20}$/,
+          message: "检查值是否与给定的Javascript正则表达式匹配"
+    },
  ```
 
 ### isURL
@@ -368,7 +430,7 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
    }
 ```
 
-## 全局 Find BorderColor 指令
+## 全局 Node Mapping 指令
 
 全局指令是为了快速的找到  HTML输入或Vue组件  BorderColor.
 
@@ -383,28 +445,34 @@ findBorderColorCmd={
 
 * `<`:上一个同胞元素
 * `>`:下一个同胞元素
-* `=`:当前元素
 * `+`:父元素
 * `-`:子元素
 * `[x]` x 如节点有多个 x 代表第几个
-* todo:此功能 在 1.6.0 版本完成
-
-### 为什么有了 autoFindBorder 自动查找边框 还需要 Find BorderColor 指令？
-
-```text
-autoFindBorder:
-是根据从上往下的方式 (当前没有子节点就返回当前节点) 对节点判断是否存在边框颜色,如存在则搜索终止返回当前找到的,
-绝大部分ui框架的  HTML输入或Form表单里的Vue组件 都会有默认的边框颜色
-所以我们几乎很少用到 Find BorderColor 指令,autoFindBorder 足够了
-```
 
 ## 配置项
 
-### openWarningLine
+### 全局配置项
+
+```js
+const config={
+  tagMapping:{},
+  debugLog:true
+}
+export default config;
+```
+
+|Property       | Type      | Default   | Description  |
+|:--------------|:---------:|:---------:|:---------|
+| tagMapping    | `object`  |           | 全局 Node Mapping 指令. |
+| debugLog      | `boolean` | `false`   | debugLog. |
+
+### 实例配置项
+
+#### openWarningLine
 
 是否打开警告线  默认 false
 
-### warningLineColor
+#### warningLineColor
 
 警告线颜色 默认 red
 
@@ -421,6 +489,23 @@ autoFindBorder:
      */
     submitButtonName: '',
     fields: {}
+```
+
+```js
+      this.vccTest.init(this, {
+          openWarningLine: true,
+          fields: {}
+      })
+      // or
+      data() {
+            return {
+                  vccTest:new this.VccValidate(this,{
+                        openWarningLine: true,
+                        fields: {}
+                  })
+            }
+      }
+
 ```
 
 ## API
@@ -481,8 +566,14 @@ autoFindBorder:
 禁用或启用提交按钮
 
 ```js
+      /**
+       * 禁用或启用提交按钮
+       * @param {*} cmd true 禁用 false 不禁用
+       */
+      disableEnableSubmitButton: function (cmd);
 
-//todo
+      // 调用方式:
+      vccTest.api().disableEnableSubmitButton(false);
 ```
 
 ### updateStatus
@@ -522,6 +613,19 @@ autoFindBorder:
       *
       */
       resetForm: function ()
+```
+
+### getMessagesOne
+
+获取错误消息 one
+
+```js
+      /**
+      * 获取错误消息
+      * @param fieldStr
+      * @param validatorRuleName 验证规则名称
+      */
+      getMessagesOne: function (fieldStr, validatorRuleName = null)
 ```
 
 ### getMessages
@@ -580,4 +684,45 @@ autoFindBorder:
    updateOption: function (fieldStr, validatorRuleName, option, value)
 ```
 
-## DEMO
+### getValidateStatus
+
+获取验证的状态          
+              
+成功:SUCCESS                 
+              
+错误:ERROR             
+            
+没验证:NO_VERIFY         
+
+```js
+      getValidateStatus: function (fieldStr)
+```
+
+## 概念
+
+### 去抖（延迟）验证
+
+// todo 1.0.8 完成
+您可以指定延迟以对输入事件进行去抖动，您可能希望等待用户停止键入然后验证字段以限制验证触发频率。
+
+这可以通过 data-vcc-delay 在要验证的字段上添加属性来实现，并为其分配您要等待的毫秒数。
+
+### 异步后端验证
+
+假设您要验证特定于您的应用领域的某些内容，这在客户端是不可行的。例如，检查电子邮件是否已注册。
+
+```js
+      fields: {
+            'email ': {
+                  validators: {
+                        callback: {
+                              message: "此邮箱已经存在",
+                              callback: function (value, $field, validateRule, allFieldValMap) {
+                                    // true:不通过 false:通过
+                                    return ['123@www.com', '333@www.com'].includes(value);
+                              },
+                        }
+                  },
+            },
+      }
+```
