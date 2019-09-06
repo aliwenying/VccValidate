@@ -154,7 +154,9 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
             field: 'newPassword',
             message: "输入值与给定字段的值不同"
       }
-      // field 表示当前field验证完成,触发另一个field的验证 非必填
+      // field 表示当前field验证完成,触发另一个field的验证 必填
+	  // 验证列表中的 field
+	  // 例如:在注册的时候验证两个密码是否输入的一样
 ```
 
 ### callback
@@ -217,12 +219,6 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
     equals: {
           message: "检查字符串是否与比较匹配",
           comparison: "123456",
-    }
-    //or
-    equals: {
-          message: "检查字符串是否与比较匹配",
-          // 验证列表中的 field
-          field: "password",
     }
 ```
 
@@ -429,6 +425,19 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
          }
    }
 ```
+### 规则里的 field 关键字 1.1.0 版本 会修改为 triggerField
+
+field 关键字 代表了 当前验证字段 验证完成后 去触发另一个 "field" 的验证
+
+例如: 在注册的账号的时,要输入两次密码
+Password , Confirm Password
+
+
+
+这时候 两个校验的字段上就要使用 field
+
+
+!>1.1.0 版本 会关键字 field 修改为 triggerField
 
 ## 全局 Node Mapping 指令
 
@@ -456,7 +465,8 @@ findBorderColorCmd={
 ```js
 const config={
   tagMapping:{},
-  debugLog:true
+  debugLog:true,
+  RULES:{}
 }
 export default config;
 ```
@@ -465,6 +475,7 @@ export default config;
 |:--------------|:---------:|:---------:|:---------|
 | tagMapping    | `object`  |           | 全局 Node Mapping 指令. |
 | debugLog      | `boolean` | `false`   | debugLog. |
+| RULES      		 | `object` |    | 自定义规则 |
 
 ### 实例配置项
 
@@ -702,7 +713,7 @@ export default config;
 
 ### 去抖（延迟）验证
 
-// todo 1.0.8 完成
+// todo 1.1.2 完成
 您可以指定延迟以对输入事件进行去抖动，您可能希望等待用户停止键入然后验证字段以限制验证触发频率。
 
 这可以通过 data-vcc-delay 在要验证的字段上添加属性来实现，并为其分配您要等待的毫秒数。
