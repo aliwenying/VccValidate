@@ -412,6 +412,20 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
   });
 ```
 
+### 全局配置项 自定义规则
+
+```js
+RULES: {
+    "isPhone": {
+      // @returns {Boolean} true:不通过 false:通过
+      validate: function (value, $field, validateRule, allFieldValMap) {
+        //todo 你的逻辑
+        return false;
+      }
+    }
+}
+```
+
 ### 使用规则
 
 !>注意 message 是必须填写的
@@ -425,19 +439,16 @@ VccValidate提供了一系列开箱即用的验证规则，它们都是本地化
          }
    }
 ```
-### 规则里的 field 关键字 1.1.0 版本 会修改为 triggerField
 
-field 关键字 代表了 当前验证字段 验证完成后 去触发另一个 "field" 的验证
+### 规则里的关键字 triggerField
+
+triggerField 关键字 代表了 当前验证字段 验证完成后 去触发另一个 "field" 的验证
 
 例如: 在注册的账号的时,要输入两次密码
 Password , Confirm Password
 
 
-
-这时候 两个校验的字段上就要使用 field
-
-
-!>1.1.0 版本 会关键字 field 修改为 triggerField
+这时候 两个校验的字段上就要使用 triggerField
 
 ## 全局 Node Mapping 指令
 
@@ -463,6 +474,13 @@ findBorderColorCmd={
 ### 全局配置项
 
 ```js
+import VccValidate from 'vcc-validate';
+import vccValidateConf from './conf/vccValidateConf'
+Vue.use(VccValidate,vccValidateConf);
+```
+
+>vccValidateConf.js
+```js
 const config={
   tagMapping:{},
   debugLog:true,
@@ -476,6 +494,8 @@ export default config;
 | tagMapping    | `object`  |           | 全局 Node Mapping 指令. |
 | debugLog      | `boolean` | `false`   | debugLog. |
 | RULES      		 | `object` |    | 自定义规则 |
+
+
 
 ### 实例配置项
 
@@ -519,6 +539,23 @@ export default config;
 
 ```
 
+## 指令
+
+### v-vcc-field
+
+ 用于验证字段
+
+### v-vcc-submit-button
+
+ 用于form 表单的提交button上
+ 防止表单中按钮进行表单验证
+
+ 验证完成自动启用,未完成处于禁用状态
+
+
+
+ ps:可以手动控制 请参考 disableEnableSubmitButton
+
 ## API
 
 以下是插件提供的公共方法列表。
@@ -561,7 +598,12 @@ export default config;
 ### destroy
 
 销毁插件
-当验证完成后自动调用
+
+**`通常情况下你不需要关心当前验证的销毁,它会伴随着vue指令销毁一块销毁`**
+
+
+**`一切都处理好了 啊啊啊`**
+
 
 ### validate
 
@@ -569,8 +611,10 @@ export default config;
 
 ### isValid
 
-如果所有表单字段都有效，则返回 true。否则，返回false.                                             
-参数 @param {Boolean} isDestroy 验证通过就销毁插件执行 `destroy` true 销毁  false 不销毁 默认false
+如果所有表单字段都有效，则返回 true。否则，返回false.     
+
+
+参数 @param {Boolean} isDestroy 验证通过就销毁插件执行 `destroy` true 销毁  false 不销毁 `默认false`
 
 ### disableEnableSubmitButton
 
@@ -697,13 +741,13 @@ export default config;
 
 ### getValidateStatus
 
-获取验证的状态          
-              
-成功:SUCCESS                 
-              
-错误:ERROR             
-            
-没验证:NO_VERIFY         
+>获取验证的状态
+
+>>**成功:SUCCESS**
+
+>>**错误:ERROR**
+
+>>**没验证:NO_VERIFY**
 
 ```js
       getValidateStatus: function (fieldStr)
