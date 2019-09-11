@@ -16,11 +16,7 @@ const validate = function (value, $field, validateRule) {
   if (typeof validateRule.reg === 'string') {
     expression = new RegExp(validateRule.reg);
   }
-  if (expression.test(String(value))) {
-    return false;
-  } else {
-    return true;
-  }
+  return !(expression.test(String(value)));
 }
 export {
   validate,

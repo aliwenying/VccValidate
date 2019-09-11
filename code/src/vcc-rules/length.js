@@ -1,11 +1,11 @@
 import VccUtils from '../vcc-utils/index';
 
 
-const attributes = {
-  message: new String(),
-  min: new Number(),
-  max: new Number(),
-}
+// const attributes = {
+//   message: new String(),
+//   min: new Number(),
+//   max: new Number(),
+// }
 
 /**
  *

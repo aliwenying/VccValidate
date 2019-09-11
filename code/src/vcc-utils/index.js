@@ -16,7 +16,7 @@ export default {
       return true;
     }
     if (val instanceof Date) {
-      return val === null;
+      return null == val;
     }
     if (Array.isArray(val)) {
       return 0 === val.length;

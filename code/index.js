@@ -260,7 +260,7 @@ export class VccValidate {
             _vccObj.api().disableEnableSubmitButton(false);
           } else {
             _vccObj.api().disableEnableSubmitButton(true);
-          };
+          }
         }
       }
     }
