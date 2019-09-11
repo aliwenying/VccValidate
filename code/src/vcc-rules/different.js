@@ -16,8 +16,11 @@ const validate = function (value, $field, validateRule, allFieldValMap) {
   }
   //field
   let comparisonField = validateRule.field;
+  if('NO_VERIFY'!==allFieldValMap.get(validateRule.field).state){
+    validateRule.triggerField=validateRule.field;
+  }
   let comparisonFieldValObj = allFieldValMap.get(comparisonField);
-  return value === comparisonFieldValObj.newVal;
+  return !(value === comparisonFieldValObj.newVal);
 }
 export {
   validate,

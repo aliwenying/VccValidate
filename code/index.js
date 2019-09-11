@@ -28,7 +28,7 @@
  * 7. 文档的补充
  * 8. debugLog + log 的完善
  * 9. i18n国际化 
- * 10. 全局 HTML输入和Vue组件 borderColor 指令 <,> ,=, -
+ * 10. 全局 HTML输入和Vue组件 borderColor 指令 <,> ,=, - 完成
  *
  * 
  */
@@ -95,7 +95,7 @@ let VccValidateConfig = {
 export class VccValidate {
 
   static install(_Vue, CONFIG) {
-    if (undefined !== CONFIG) {
+    if (VccUtils.isNotNull(CONFIG)) {
       configure(CONFIG);
     }
     //定义全局变量
@@ -106,8 +106,6 @@ export class VccValidate {
         let value = binding.value;
         const key = `${vnode.context._uid}_SUBMIT_BUTTON_NODE_${value}`;
         cacheObj.submitButtonNodeMap.set(key, el);
-        //准备工作
-        //例如，添加事件处理器或只需要运行一次的高耗任务
       },
       unbind: function (el, binding, vnode) {
         //清理工作
@@ -338,10 +336,12 @@ export class VccValidate {
             }
             let evalVal = eval(evalStr);
             let fieldValObj = {
-              /**上一次输入的数据 */
+              //**上一次输入的数据
               'oldVal': evalVal,
-              /**现在的输入的数据 */
-              'newVal': evalVal
+              //**现在的输入的数据
+              'newVal': evalVal,
+              //**状态
+              'state': VccValidateConfig.finalStatusType.no_verify
             }
             _vccObj.currentObjData.fieldValMap.set(fieldStr, fieldValObj);
           }
@@ -353,6 +353,8 @@ export class VccValidate {
             let validatorsKeys = Object.keys(getOptions.validators);
             // 触发验证器列表
             let triggerValidatorsList = new Set();
+            // 总状态 默认成功一个规则失败即是失败
+            let totalState = VccValidateConfig.finalStatusType.success;
             validatorsKeys.forEach((validatorRuleName, index) => {
               //当前验证规则
               let validatorObj = getOptions.validators[validatorRuleName];
@@ -363,6 +365,13 @@ export class VccValidate {
                 /**上一次输入的数据 */
                 'oldVal': oldVal
               };
+              // 当前state 不是 no_verify 就将 state 设置为空
+              // 因为在输入的验证中你并不知道 验证结果
+              let getCurrentFieldVal = _vccObj.currentObjData.fieldValMap.get(fieldStr);
+              if (getCurrentFieldVal.state !== VccValidateConfig.finalStatusType.no_verify) {
+                getCurrentFieldVal.state = '';
+                _vccObj.currentObjData.fieldValMap.set(fieldStr, getCurrentFieldVal);
+              }
               let verifyResult = VccRules[validatorRuleName].validate(newVal, $field, validatorObj, _vccObj.currentObjData.fieldValMap);
               let statusObj = {
                 'validatorRuleName': validatorRuleName,
@@ -377,21 +386,24 @@ export class VccValidate {
                 errorObj.message = validatorObj.message;
                 statusObj.status = VccValidateConfig.finalStatusType.error;
                 errorList.push(errorObj);
+                // 总状态判断
+                totalState = VccValidateConfig.finalStatusType.error;
               } else {
                 statusObj.status = VccValidateConfig.finalStatusType.success;
-                // 判断是否触发其他字段的验证
-                if (undefined !== validatorObj.field) {
-                  triggerValidatorsList.add(validatorObj.field);
-                }
+              }
+              // 判断是否触发其他字段的验证
+              if (undefined !== validatorObj.triggerField) {
+                triggerValidatorsList.add(validatorObj.triggerField);
               }
               statusList.push(statusObj);
-              //console.log(`${validatorRuleName}-${index}`);
             });
             let fieldValObj = {
               /**上一次输入的数据 */
               'oldVal': oldVal,
               /**现在的输入的数据 */
-              'newVal': newVal
+              'newVal': newVal,
+              //**状态
+              'state': totalState
             }
             _vccObj.currentObjData.fieldValMap.set(fieldStr, fieldValObj);
             _vccObj.currentObjData.fieldStatus.set(fieldStr, statusList);
@@ -640,6 +652,9 @@ export class VccValidate {
         _vccObj.currentObjData.eventKo.delete(fieldStr)
         //恢复默认 border
         let nodeBorderListMap = _vccObj.currentObjData.fieldBorderList.get(fieldStr);
+        if (VccUtils.isNull(nodeBorderListMap)) {
+          return;
+        }
         let setStyle;
         nodeBorderListMap.forEach((nodeBorder, index) => {
           if (0 === index) {
@@ -852,6 +867,7 @@ export class VccValidate {
           getOption[validatorRuleName] = option;
         }
         _vccObj.currentObjData.fieldOptions.set(fieldStr, getOption);
+        _vccObj.currentObjData.fieldOptions = new Map(_vccObj.currentObjData.fieldOptions);
       },
 
     }

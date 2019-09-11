@@ -12,7 +12,7 @@ VccValidate是Vue.js的验证库。它有很多开箱即用的验证规则，也
 
 ## 特性
 
-- 容易使用并且轻量 (<9kB gzipped)
+- 容易使用并且轻量 (<10kB gzipped)
 - 丰富的 API,兼容 IE10+
 - 简单: 基于模板的验证既熟悉又易于设置
 - 灵活: 验证HTML输入和Vue组件，生成本地化错误，可扩展，它可以完成所有操作
@@ -27,7 +27,6 @@ VccValidate是Vue.js的验证库。它有很多开箱即用的验证规则，也
 
 可以查看 [ShowCase](https://dev-zl.github.io/VccValidate/#/) 来了解使用 VccValidate 的文档项目。
 
- 
 ## 社区
 
 在[github](https://github.com/dev-zl/VccValidate)的社区里可以找到VccValidate的用户和开发者团队.                  

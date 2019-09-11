@@ -6,13 +6,13 @@ export default {
     return val.replace(/@/g, "'");
   },
   isNull(val) {
-    return val === undefined || val === null;
+    return undefined === val || null === val;
   },
   isNotNull(val) {
     return !this.isNull(val);
   },
   isEmpty(val) {
-    if (val === undefined || val === null) {
+    if (undefined === val || null === val) {
       return true;
     }
     if (val instanceof Date) {

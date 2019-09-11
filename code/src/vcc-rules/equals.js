@@ -15,12 +15,6 @@ const validate = function (value, $field, validateRule, allFieldValMap) {
   if (VccUtils.isEmpty(value)) {
     return false;
   }
-  if (undefined !== validateRule.field) {
-    //field
-    let comparisonField = validateRule.field;
-    let comparisonFieldValObj = allFieldValMap.get(comparisonField);
-    return !equals(value, comparisonFieldValObj.newVal);
-  }
   return !equals(value, validateRule.comparison);
 }
 export {

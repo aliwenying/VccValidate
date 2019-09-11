@@ -1,6 +1,10 @@
+import {
+  extend
+} from '../vcc-rules/index';
 const CONFIG = {
   tagMapping: {},
   debugLog: false,
+  RULES: {}
 };
 
 export default CONFIG;
@@ -19,11 +23,17 @@ export function getTagMappingCmd(tagName) {
 }
 
 export function configure(configObj) {
-  Object.keys(CONFIG).forEach(f=>{
-    let v=configObj[f];
-    if(undefined!==v){
-      CONFIG[f]=configObj[f];
+  Object.keys(CONFIG).forEach(f => {
+    let v = configObj[f];
+    if (undefined !== v) {
+      CONFIG[f] = configObj[f];
     }
-  }); 
-  
+  });
+  Object.keys(CONFIG.RULES).forEach(name => {
+    extend(name, CONFIG.RULES[name])
+  });
+
+
+
+
 }
