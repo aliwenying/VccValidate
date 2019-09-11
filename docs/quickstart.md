@@ -20,25 +20,31 @@ import VccValidate from 'vcc-validate';
 Vue.use(VccValidate);
 ```
 
+或直接包含脚本
+
+
+```html
+  <script src="path/to/vue.js"></script>
+  <script src="path/to/vcc-validate.js"></script>
+  <script>
+    Vue.use(VccValidate); // good to go.
+  </script>
+```
+
 ### 基本示例
 
 您只需将 `v-vcc-field` 指令添加到要验证的HTML输入或Vue组件
 然后，向指令传递一个 你想校验的字段名称。
 
 ```html
-<input v-vcc-field="'userItem.lspuLoginName'" :value.sync="userItem.lspuLoginName"/>
+<el-input v-vcc-field="'userItem.lspuLoginName'" v-model="userItem.lspuLoginName"/>
 ```
 
 要显示错误消息，我们只需使用该`api().getMessagesOne(fieldStr)`方法获取该字段错误:
 
 ```html
-<el-input v-vcc-field="'modelForm[@userItem.lspuLoginName@]'" :value.sync="modelForm['userItem.lspuLoginName']">
-<el-checkbox v-model="testSelect" v-vcc-field="'testSelect|for'" :label="key" class="check-item"
-        v-for="(value,key) of carrierOptions" :key="key">{{value.label}}</el-checkbox>
-
+<el-input v-vcc-field="'modelForm[@userItem.lspuLoginName@]'" v-model="modelForm['userItem.lspuLoginName']">
 <span class="validate-message"> {{vccTest.api().getMessagesOne('modelForm[@userItem.lspuLoginName@]')}}</span>
-
-<span class="validate-message"> {{vccTest.api().getMessagesOne('testSelect')}}</span>
 ```
 
 ```js
@@ -92,7 +98,7 @@ export default {
 ### 显示单个错误消息
 
 ```html
-<input type="text"    v-vcc-field="'lspuEmail'" :value.sync="lspuEmail']">
+<el-input type="text"    v-vcc-field="'lspuEmail'" v-model="lspuEmail']">
 <span>{{ vccTest.api().getMessagesOne('lspuEmail')}}</span>
 ```
 
