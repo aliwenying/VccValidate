@@ -475,6 +475,21 @@ findBorderColorCmd={
 * `-`:子元素
 * `[x]` x 如节点有多个 x 代表第几个
 
+### 附加
+
+例如: 遇到下图这个情况如何进行 Node Mapping
+![avatar](_images/2.png)
+
+很明显 这个是一个输入框组件 分为两个部分 一个 icon 一个input.  
+
+Node Mapping 指令只能选择一个,那么另一部分不要了?
+
+![avatar](_images/1.png)
+
+显然是不可能的,这时候就用到了  Node Mapping 附加
+
+`TODO 1.1.0 上线`
+
 ## 配置项
 
 ### 全局配置项
