@@ -22,6 +22,7 @@ Vue.use(VccValidate);
 
 或直接包含脚本
 
+`TODO 直接引入 1.1.0 完成.`
 
 ```html
   <script src="path/to/vue.js"></script>
@@ -53,7 +54,11 @@ export default {
       data() {
               return {
                     vccTest: new this.vccValidator(),
-                    message: 'Hello VccValidate!'
+                    message: 'Hello VccValidate!',
+                    modelForm:{
+                        'userItem.lspuLoginName':''
+                    },
+                    testSelect:''
               }
       },
       methods: {
@@ -802,3 +807,7 @@ export default config;
             },
       }
 ```
+
+## Demo
+
+制作中... 敬请期待
