@@ -436,12 +436,15 @@ export class VccValidate {
             _vccObj.utils().submitButtonStatusVariety();
             if (triggerValidatorsList.size > 0) {
               triggerValidatorsList.forEach(fs => {
-                if (fs === _vccObj.currentObjData.eventKo.get(fieldStr)) {
+                let getFsName = _vccObj.currentObjData.eventKo.get(fieldStr);
+                if (fs === getFsName) {
                   _vccObj.currentObjData.eventKo.delete(fieldStr);
                 } else {
                   // key 去的地方 ,value 来自于哪里
                   _vccObj.currentObjData.eventKo.set(fs, fieldStr);
-                  _this.revalidateField(fs);
+                  _this.revalidateField(fs, function () {
+                    _vccObj.currentObjData.eventKo.delete(fs);
+                  });
                 }
               });
             }
@@ -740,7 +743,7 @@ export class VccValidate {
        * 重新验证给定字段
        * @param fieldStr
        */
-      revalidateField: function (fieldStr) {
+      revalidateField: function (fieldStr, verifyCallback = null) {
         if (VccUtils.isEmpty(fieldStr)) {
           console.error(`VccValidate: revalidateField error field Name is empty`);
           return;
@@ -751,7 +754,7 @@ export class VccValidate {
         let unwatch = _vccObj.currentObjData.fieldUnwatch.get(fieldStr);
         unwatch();
         _vccObj.currentObjData.fieldUnwatch.delete(fieldStr);
-        this.addField(fieldStr, _vccObj.currentObjData.fieldOptions.get(fieldStr), true);
+        this.addField(fieldStr, _vccObj.currentObjData.fieldOptions.get(fieldStr), true, verifyCallback);
       },
       /**
        * 重置表格
