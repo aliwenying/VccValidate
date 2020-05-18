@@ -198,6 +198,7 @@ export class VccValidate {
   }
 
   init(_vm, config) {
+    this.api().destroy();
     let copyConfig = Object.assign({}, VccValidateConfig.config);
     config = Object.assign(copyConfig, config);
     this.currentObjConfig = config;
@@ -551,6 +552,8 @@ export class VccValidate {
         });
         _vccObj.currentObjData.fieldBorderList.clear();
         _vccObj.currentObjData.fieldBorderDefaultStyle.clear();
+        _vccObj.currentObjData.fieldName=[];
+        _vccObj.currentObjConfig.fields={}
         _vccObj.api().disableEnableSubmitButton(false);
       },
       /**
