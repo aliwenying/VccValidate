@@ -20,16 +20,12 @@ import VccValidate from 'vcc-validate';
 Vue.use(VccValidate);
 ```
 
-或直接包含脚本
+或直接包含配置文件
 
-`TODO 直接引入 1.1.0 完成.`
-
-```html
-  <script src="path/to/vue.js"></script>
-  <script src="path/to/vcc-validate.js"></script>
-  <script>
-    Vue.use(VccValidate); // good to go.
-  </script>
+```js
+import VccValidate from 'vcc-validate';
+import vccValidateConf from './conf/vccValidateConf';
+Vue.use(VccValidate,vccValidateConf);
 ```
 
 ### 基本示例
@@ -97,6 +93,14 @@ export default {
       }
 }
 ```
+
+## 更新日志
+
+### 1.1.0
+
++ 新增功能: Node Mapping Function 完全可以自定义错误提示的样式 ~~~特别棒的功能 :100:
++ 新增功能: 教程文档更新,demo 完善
++ 新增功能: 支持vue 动态添加data属性 进行validate
 
 ## 显示错误
 
@@ -478,7 +482,7 @@ findBorderColorCmd={
 * `>`:下一个同胞元素
 * `+`:父元素
 * `-`:子元素
-* `[x]` x 如节点有多个 x 代表第几个
+* `[x]`: x 如节点有多个 x 代表第几个
 
 ### 附加
 
@@ -491,13 +495,26 @@ Node Mapping 指令只能选择一个,那么另一部分不要了?
 
 ![avatar](_images/1.png)
 
-显然是不可能的,这时候就用到了  Node Mapping 附加
+显然是不可能的,这时候就用到了  Node Mapping Function ~特别棒的功能
 
-`TODO 1.1.0 上线`
+### Node Mapping Function ~~~特别棒的功能 :100:
+
+* `field`:验证的字段名称
+* `error`:是否错误
+* `errorList`:错误信息
+* `nodeList`:字段对应的 组件或者node(tag)
+* `oldState`:上一次的验证状态
+
+```js
+    'xx-input':function(field,error,errorList,nodeList,oldState){
+          // todo 你的逻辑
+    }
+```
+
 
 ## 配置项
 
-### 全局配置项
+### 全局配置项 VccValidateConf
 
 ```js
 import VccValidate from 'vcc-validate';
@@ -507,10 +524,18 @@ Vue.use(VccValidate,vccValidateConf);
 
 >vccValidateConf.js
 ```js
+
+const mappingFunction={
+    'xx-input':function(field,error,errorList,nodeList,oldState){
+      //todo 你的逻辑
+    }
+}
+
 const config={
   tagMapping:{},
   debugLog:true,
-  RULES:{}
+  RULES:{},
+  mappingFunction:mappingFunction
 }
 export default config;
 ```
