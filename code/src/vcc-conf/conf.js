@@ -3,6 +3,7 @@ import {
 } from '../vcc-rules/index';
 const CONFIG = {
   tagMapping: {},
+  mappingFunction: {},
   debugLog: false,
   RULES: {}
 };
@@ -12,6 +13,14 @@ export default CONFIG;
 export function mappingAdd(tagName, cmd) {
   CONFIG.tagMapping[tagName] = cmd;
 }
+
+export function mappingFunctionAdd(tagName, fun) {
+  CONFIG.mappingFunction[tagName] = fun;
+}
+export function getMappingFunction(tagName) {
+  return CONFIG.mappingFunction[tagName];
+}
+
 export function mappingAddAll(vccMapping) {
   Object.keys(vccMapping).forEach(tagName => {
     CONFIG.tagMapping[tag] = vccMapping[tagName];

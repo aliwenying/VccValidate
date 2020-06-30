@@ -46,6 +46,7 @@ import VccRules, {
 import VccUtils from './src/vcc-utils/index';
 import VccConf, {
   getTagMappingCmd,
+  getMappingFunction,
   configure
 } from './src/vcc-conf/conf';
 
@@ -252,6 +253,16 @@ export class VccValidate {
         return isNotRequiredFieldMap;
       },
       /**
+       * getNodeMappingName
+       * @param {*} $node hnode
+       */
+      getNodeMappingName($node) {
+        if (VccUtils.isNull($node.__vue__)) {
+          return $node.tagName;
+        }
+        return $node.__vue__.$vnode.componentOptions.tag;
+      },
+      /**
        * 提交按钮状态多样性(变化)
        */
       submitButtonStatusVariety() {
@@ -406,6 +417,7 @@ export class VccValidate {
               //**状态
               'state': totalState
             }
+            let oldState= _vccObj.currentObjData.fieldStatus.get(fieldStr);
             _vccObj.currentObjData.fieldValMap.set(fieldStr, fieldValObj);
             _vccObj.currentObjData.fieldStatus.set(fieldStr, statusList);
             _vccObj.currentObjData.fieldError.set(fieldStr, errorList);
@@ -413,6 +425,12 @@ export class VccValidate {
             _vccObj.currentObjData.fieldStatus = new Map(_vccObj.currentObjData.fieldStatus);
             _vccObj.currentObjData.fieldError = new Map(_vccObj.currentObjData.fieldError);
             _vccObj.currentObjData.fieldValMap = new Map(_vccObj.currentObjData.fieldValMap);
+
+            // 判断是否存在 mappingFunction
+            let fieldMappingFunction = getMappingFunction(_vccObj.utils().getNodeMappingName(cacheObj.fieldAllMap.get(key)[0].hnode));
+            if (null != fieldMappingFunction) {
+              fieldMappingFunction(fieldStr, errorList.length > 0, errorList, cacheObj.fieldAllMap.get(key), oldState);
+            }
             if (true === _vccObj.currentObjConfig.openWarningLine) {
               let nodeBorderListMap = _vccObj.currentObjData.fieldBorderList.get(fieldStr);
               let setStyle;
