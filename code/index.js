@@ -53,7 +53,6 @@ import VccConf, {
 /**发布/订阅 模式  初始化 */
 let mq = new VccMQ();
 let cacheObj = new VccCache();
-let Vue;
 
 
 let VccValidateConfig = {
@@ -101,7 +100,6 @@ export class VccValidate {
     }
     //定义全局变量
     _Vue.prototype.VccValidate = VccValidate;
-    Vue = _Vue;
     _Vue.directive('vcc-submit-button', {
       bind: function (el, binding, vnode) {
         let value = binding.value;
@@ -199,11 +197,11 @@ export class VccValidate {
   }
 
   init(_vm, config) {
+    this.Vue = _vm
     this.api().destroy();
     let copyConfig = Object.assign({}, VccValidateConfig.config);
     config = Object.assign(copyConfig, config);
     this.currentObjConfig = config;
-    Vue = _vm;
     if (VccUtils.isNotEmpty(config.fields)) {
       let _this = this;
       return new Promise((resolve1) => {
@@ -295,7 +293,7 @@ export class VccValidate {
           return;
         }
         //key
-        const key = `${Vue._uid}_${fieldStr}`;
+        const key = `${_vccObj.Vue._uid}_${fieldStr}`;
         //防止重复
         if (!_vccObj.currentObjData.fieldName.includes(fieldStr)) {
           _vccObj.currentObjData.fieldName.push(fieldStr);
@@ -342,9 +340,9 @@ export class VccValidate {
             //替换 @
             let replaceFieldStr = VccUtils.symbolReplace(fieldStr);
             if (replaceFieldStr.substring(0, 1) === '[') {
-              evalStr = `Vue.$data${replaceFieldStr}`;
+              evalStr = `_vccObj.Vue.$data${replaceFieldStr}`;
             } else {
-              evalStr = `Vue.$data.${replaceFieldStr}`;
+              evalStr = `_vccObj.Vue.$data.${replaceFieldStr}`;
             }
             let evalVal = eval(evalStr);
             let fieldValObj = {
@@ -357,7 +355,7 @@ export class VccValidate {
             }
             _vccObj.currentObjData.fieldValMap.set(fieldStr, fieldValObj);
           }
-          let unwatch = Vue.$watch(function () {
+          let unwatch = _vccObj.Vue.$watch(function () {
             return eval(evalStr);
           }, function (newVal, oldVal) {
             let errorList = [];
@@ -631,7 +629,7 @@ export class VccValidate {
        * @param {*} cmd true 禁用 false 不禁用
        */
       disableEnableSubmitButton: function (cmd) {
-        const key = `${Vue._uid}_SUBMIT_BUTTON_NODE_${_vccObj.currentObjConfig.submitButtonName}`;
+        const key = `${_vccObj.Vue._uid}_SUBMIT_BUTTON_NODE_${_vccObj.currentObjConfig.submitButtonName}`;
         let node = cacheObj.submitButtonNodeMap.get(key);
         if (VccUtils.isNull(node)) {
           return;
@@ -646,7 +644,7 @@ export class VccValidate {
           console.error(`VccValidate: removeField error field Name is Empty`);
           return;
         }
-        let unbindKey = `unbind_${Vue._uid}_`;
+        let unbindKey = `unbind_${_vccObj.Vue._uid}_`;
         if (fieldStr.indexOf(unbindKey) !== -1) {
           fieldStr = fieldStr.substring(unbindKey.length);
         }
