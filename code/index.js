@@ -382,7 +382,7 @@ export class VccValidate {
                 getCurrentFieldVal.state = '';
                 _vccObj.currentObjData.fieldValMap.set(fieldStr, getCurrentFieldVal);
               }
-              let verifyResult = VccRules[validatorRuleName].validate(newVal, $field, validatorObj, _vccObj.currentObjData.fieldValMap);
+              let verifyResult = VccRules[validatorRuleName].validate(newVal, $field, validatorObj, _vccObj.currentObjData.fieldValMap, _vccObj.api());
               let statusObj = {
                 'validatorRuleName': validatorRuleName,
                 'status': ''

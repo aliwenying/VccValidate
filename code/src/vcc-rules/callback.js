@@ -7,8 +7,8 @@
  * @param {Object} options Field options
  * @returns {Boolean} true:不通过 false:通过
  */
-const validate = function (value, $field, validateRule, allFieldValMap) {
-  let result = validateRule.callback(value, $field, validateRule, allFieldValMap);
+const validate = function (value, $field, validateRule, allFieldValMap, api) {
+  let result = validateRule.callback(value, $field, validateRule, allFieldValMap, api);
   if (undefined === result) {
     result = false;
   }
